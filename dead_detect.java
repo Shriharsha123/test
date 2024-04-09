@@ -1,7 +1,11 @@
 package com.example.myapplication;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.InputType;
+import android.text.TextWatcher;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -14,13 +18,14 @@ class Process
     String name;
     int at;
     int bt;
+
     Process next;
 
 
-    public Process(String str, int num1, int num2) {
-        this.name = str;
-        this.at= num1;
-        this.bt=num2;
+    public Process() {
+        this.name = null;
+        this.at= -1;
+        this.bt=-1;
         this.next=null;
     }
     public String getName()
@@ -35,18 +40,40 @@ class Process
     {
         return this.bt;
     }
+    public void setName(String str)
+    {
+        this.name=str;
+
+    }
+    public void setAt(int arrt)
+    {
+        this.at=arrt;
+
+    }
+    public void setBt(int burt)
+    {
+        this.bt=burt;
+
+    }
+    public boolean checkFill()
+    {
+        if(this.name==null|| this.at<0 || this.bt<0)
+            return false;
+        return true;
+    }
 
 
 }
 
 public class dead_detect extends AppCompatActivity{
-    boolean isFilled=true;
+    //boolean isFilled=true;
     Process head=null;
+    int procNum=0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.dead_detect);
-        int procNum=0;
+        //int procNum=0;
 
         Button createProcessBt =  findViewById(R.id.addProc);
         Button submitBt= findViewById(R.id.submitProcSched);
@@ -55,9 +82,20 @@ public class dead_detect extends AppCompatActivity{
             @Override
             public void onClick(View view)
             {
-                if(isFilled) {
+                Process tail=getTail();
+                if(tail==null)
+                {
                     procNum = procNum + 1;
                     addProcessInput(procNum);
+                }
+                //int procNum=0;
+                else if(tail.checkFill()) {
+                    procNum = procNum + 1;
+                    addProcessInput(procNum);
+                }
+                else
+                {
+                    Toast.makeText(dead_detect.this, "You did not enter values", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -75,12 +113,10 @@ public class dead_detect extends AppCompatActivity{
     }
     private void addProcessInput(int procNum)
     {
-        LinearLayout parent= findViewById(R.id.parent);
+        LinearLayout parent1= findViewById(R.id.procNameRow);
+        LinearLayout parent2= findViewById(R.id.atRow);
+        LinearLayout parent3= findViewById(R.id.btRow);
 
-        LinearLayout newChild= new LinearLayout(this);
-        LinearLayout.LayoutParams newChildParams= new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,LinearLayout.LayoutParams.WRAP_CONTENT);
-        newChild.setLayoutParams(newChildParams);
-        newChild.setOrientation(LinearLayout.HORIZONTAL);
 
         TextInputLayout procName= new TextInputLayout(this);
         procName.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
@@ -96,6 +132,7 @@ public class dead_detect extends AppCompatActivity{
         EditText editText2= new EditText(this);
         editText2.setLayoutParams(editTextParams);
         editText2.setHint("Arrival Time");
+        editText2.setInputType(InputType.TYPE_CLASS_NUMBER);
 
         TextInputLayout bt= new TextInputLayout(this);
         bt.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
@@ -103,44 +140,125 @@ public class dead_detect extends AppCompatActivity{
         EditText editText3= new EditText(this);
         editText3.setLayoutParams(editTextParams);
         editText3.setHint("Burst Time");
+        editText3.setInputType(InputType.TYPE_CLASS_NUMBER);
 
-        parent.addView(newChild);
-        newChild.addView(procName);
-        newChild.addView(at);
-        newChild.addView(bt);
+        parent1.addView(procName);
+        parent2.addView(at);
+        parent3.addView(bt);
         procName.addView(editText, editTextParams);
         at.addView(editText2, editTextParams);
         bt.addView(editText3, editTextParams);
 
-        String input = editText.getText().toString();
-        if (input.matches("")) {
-            Toast.makeText(this, "You did not enter a username", Toast.LENGTH_SHORT).show();
-            isFilled=false;
-        }
+        Process newProc;
+       if(head==null)
+       {
+           head=new Process();
+           newProc=head;
+       }
+       else
+       {
+           Process temp=head;
+           while(temp.next!=null)
+           {
+               temp=temp.next;
+           }
+           newProc=new Process();
+           temp.next=newProc;
+       }
 
-        String input2 = editText2.getText().toString();
-        if (input2.matches("")) {
-            Toast.makeText(this, "You did not enter a username", Toast.LENGTH_SHORT).show();
-            isFilled=false;
-        }
 
-        String input3 = editText3.getText().toString();
-        if (input3.matches("")) {
-            Toast.makeText(this, "You did not enter a username", Toast.LENGTH_SHORT).show();
+        /*if (input2.matches("")) {
+            Toast.makeText(this, "You did not enter Arrival time", Toast.LENGTH_SHORT).show();
             isFilled=false;
-        }
-        if(head==null)
-            head= new Process(input,Integer.parseInt(input2),Integer.parseInt(input3));
-        else
-        {
-            Process temp=head;
-            while(temp.next!=null)
-            {
-                temp=temp.next;
+        }*/
+
+
+        /*if (input3.matches("")) {
+            Toast.makeText(this, "You did not enter Burst time", Toast.LENGTH_SHORT).show();
+            isFilled=false;
+        }*/
+
+        editText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
             }
-            Process newProc= new Process(input,Integer.parseInt(input2),Integer.parseInt(input3));
-            temp.next=newProc;
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+            public void afterTextChanged(Editable s) {
+                String input = editText.getText().toString();
+                //newProc.setName(input);
+                Boolean filled;
+                if (input.equals("")) {
+                    filled = false;
+                    newProc.setName(null);
+                }
+                else
+                    filled=true;
+                if (filled)
+                    newProc.setName(input);
+            }
+        });
+        editText2.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+            public void afterTextChanged(Editable s) {
+                String input2 = editText2.getText().toString();
+                //newProc.setAt(Integer.parseInt(input2));
+                Boolean filled;
+                if (input2.equals("")) {
+                    filled = false;
+                    newProc.setAt(-1);
+                }
+                else
+                    filled=true;
+                if (filled)
+                    newProc.setAt(Integer.parseInt(input2));
+            }
+        });
+        editText3.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+            public void afterTextChanged(Editable s) {
+                String input3 = editText3.getText().toString();
+                Boolean filled;
+                if (input3.equals("")) {
+                    filled = false;
+                    newProc.setBt(-1);
+                }
+                else
+                    filled=true;
+                if (filled)
+                    newProc.setBt(Integer.parseInt(input3));
+            }
+        });
+
+    }
+
+    public Process getTail()
+    {
+        if (head==null)
+            return null;
+        Process temp=head;
+        while(temp.next!=null)
+        {
+            temp=temp.next;
         }
+        return temp;
     }
 
 
