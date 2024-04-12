@@ -19,7 +19,6 @@
         android:minHeight="48dp"
         android:textColorHint="#8D6E63" />
 
-    <!-- Schedule Button -->
     <Button
         android:id="@+id/scheduleButton"
         android:layout_width="wrap_content"
@@ -28,7 +27,6 @@
         android:layout_gravity="center_horizontal"
         android:text="@string/schedule"/>
 
-    <!-- Result TextView -->
     <TextView
         android:id="@+id/resultTextView"
         android:layout_width="wrap_content"
