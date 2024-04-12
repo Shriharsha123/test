@@ -24,7 +24,7 @@ public class MainActivity extends AppCompatActivity {
     EditText inputEditText;
     Button scheduleButton;
     LineChart lineChart;
-    TextView resultTextView;
+    TextView result;
     View diskHeadView; // View representing the disk head
 
     @Override
@@ -35,7 +35,7 @@ public class MainActivity extends AppCompatActivity {
         inputEditText = findViewById(R.id.inputEditText);
         scheduleButton = findViewById(R.id.scheduleButton);
         lineChart = findViewById(R.id.lineChart);
-        resultTextView = findViewById(R.id.resultTextView);
+        result = findViewById(R.id.resultTextView);
         diskHeadView = findViewById(R.id.diskHeadView); // Reference to the disk head view
 
         setupChart();
@@ -59,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
                 int totalHeadMovement = calculateTotalHeadMovement(requests, initialHeadPosition);
 
                 // Display the result
-                resultTextView.setText("Total head movement using FCFS: " + totalHeadMovement);
+                result.setText("Total head movement using FCFS: " + totalHeadMovement);
 
                 // Animate the disk head along with the line chart
                 animateDiskHead(requests);
