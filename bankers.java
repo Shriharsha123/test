@@ -13,7 +13,7 @@ public class MainActivity extends AppCompatActivity {
     int[][] need, allocate, max, avail;
     int np, nr;
     EditText npEditText, nrEditText,allocationEditText, maxEditText, availableEditText;
-    TextView resultTextView;
+    TextView result;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,7 +25,7 @@ public class MainActivity extends AppCompatActivity {
         allocationEditText = findViewById(R.id.allocationEditText);
         maxEditText = findViewById(R.id.maxEditText);
         availableEditText = findViewById(R.id.availableEditText);
-        resultTextView = findViewById(R.id.resultTextView);
+        result = findViewById(R.id.resultTextView);
 
         Button calculateButton = findViewById(R.id.calculateButton);
         calculateButton.setOnClickListener(new View.OnClickListener() {
@@ -109,6 +109,6 @@ public class MainActivity extends AppCompatActivity {
         else
             output.append("All processes can't be allocated safely");
 
-        resultTextView.setText(output.toString());
+        result.setText(output.toString());
     }
 }
