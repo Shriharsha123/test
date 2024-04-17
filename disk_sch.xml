@@ -15,9 +15,18 @@
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"
         android:hint="Enter disk requests (comma-separated)"
-        android:inputType="number"
+        android:inputType="text"
         android:minHeight="48dp"
         android:textColorHint="#8D6E63" />
+
+    <EditText
+        android:id="@+id/initialHeadEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:hint="Enter initial head position"
+        android:inputType="numberDecimal"
+        android:minHeight="48dp" />
 
     <Button
         android:id="@+id/scheduleButton"
@@ -25,7 +34,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:layout_gravity="center_horizontal"
-        android:text="@string/schedule"/>
+        android:text="schedule"/>
 
     <TextView
         android:id="@+id/resultTextView"
@@ -49,4 +58,3 @@
         android:visibility="invisible" />
 
 </LinearLayout>
-
