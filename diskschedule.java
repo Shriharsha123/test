@@ -1,4 +1,3 @@
-package com.example.myapplication;
 import android.animation.ObjectAnimator;
 import android.os.Bundle;
 import android.os.Handler;
@@ -6,6 +5,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -22,10 +22,11 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
 
     EditText inputEditText;
+    EditText initialHeadText;
     Button scheduleButton;
     LineChart lineChart;
     TextView result;
-    View diskHeadView; // View representing the disk head
+    View diskHeadView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,10 +34,11 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         inputEditText = findViewById(R.id.inputEditText);
+        initialHeadText = findViewById(R.id.initialHeadEditText); 
         scheduleButton = findViewById(R.id.scheduleButton);
         lineChart = findViewById(R.id.lineChart);
         result = findViewById(R.id.resultTextView);
-        diskHeadView = findViewById(R.id.diskHeadView); // Reference to the disk head view
+        diskHeadView = findViewById(R.id.diskHeadView);
 
         setupChart();
 
@@ -51,29 +53,33 @@ public class MainActivity extends AppCompatActivity {
                 for (int i = 0; i < inputArray.length; i++) {
                     requests[i] = Integer.parseInt(inputArray[i].trim());
                 }
+                
+                String initialHeadInput = initialHeadText.getText().toString();
 
-                //  initial head position
-                int initialHeadPosition = 50;
+                int initialHeadPosition;
+                try {
+                    initialHeadPosition = Integer.parseInt(initialHeadInput);
+                } catch (NumberFormatException e) {
 
-                // Calculate total head movement using FCFS algorithm
+                    Toast.makeText(MainActivity.this, "Invalid initial head position", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                
                 int totalHeadMovement = calculateTotalHeadMovement(requests, initialHeadPosition);
 
-                // Display the result
-                result.setText("Total head movement using FCFS: " + totalHeadMovement);
 
-                // Animate the disk head along with the line chart
+                result.setText("Total head movement using FCFS: " + totalHeadMovement);
+                
                 animateDiskHead(requests);
                 updateLineChart(requests);
             }
         });
     }
-
-    // FCFS disk scheduling algorithm implementation
+    
     private int calculateTotalHeadMovement(int[] requests, int initialHeadPosition) {
         int totalHeadMovement = 0;
         int currentHeadPosition = initialHeadPosition;
 
-        // Calculate total head movement
         for (int i = 0; i < requests.length; i++) {
             totalHeadMovement += Math.abs(requests[i] - currentHeadPosition);
             currentHeadPosition = requests[i];
@@ -81,7 +87,6 @@ public class MainActivity extends AppCompatActivity {
 
         return totalHeadMovement;
     }
-
     // Set up line chart
     private void setupChart() {
         lineChart.getDescription().setEnabled(false); // Disable chart description
@@ -122,10 +127,9 @@ public class MainActivity extends AppCompatActivity {
                 public void run() {
                     animateDiskHeadToPosition(request);
                 }
-            }, i * 1000); // Delay each animation by i seconds (adjust as needed)
+            }, i * 1000L); 
         }
     }
-
     // Update line chart with disk requests
     private void updateLineChart(int[] requests) {
         List<Entry> entries = new ArrayList<>();
@@ -139,6 +143,6 @@ public class MainActivity extends AppCompatActivity {
 
         LineData lineData = new LineData(dataSet);
         lineChart.setData(lineData);
-        lineChart.animateY(1500); // Animate the chart
+        lineChart.animateY(1500);
     }
 }
